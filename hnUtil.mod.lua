@@ -147,7 +147,7 @@ function hnGuiUtil:__index(i)
 	elseif i == "Position" then
 		return self._position
 	else
-		return hnUtil[i]
+		return hnGuiUtil[i]
 	end
 end
 
