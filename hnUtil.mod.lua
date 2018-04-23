@@ -1,23 +1,3 @@
---@optimizations
-local game = game
-local Color3 = Color3
-local Vector3 = Vector3
-local UDim2 = UDim2
-local math = math
-local string = string
-local table = table
-local tonumber = tonumber
-local pairs = pairs
-local setmetatable = setmetatable
-local select = select
---@math
-local floor = math.floor
-local fmod = math.fmod
-local random = math.random
---@string
-local sub = string.sub
---@table
-local insert = table.insert
 --@render functions
 local function ToUDim2(self, guiobject)
 	if not guiobject.Parent or not guiobject.Parent:IsA("GuiBase2d") then
@@ -37,10 +17,10 @@ end
 local function AttachToParent(self)
 	local parent = self._object.Parent
 	if self._parentconnection then
-		self._parentconnection:disconnect()
+		self._parentconnection:Disconnect()
 	end
 	if parent then
-		self._parentconnection = parent.Changed:connect(function(property)
+		self._parentconnection = parent.Changed:Connect(function(property)
 			if property == "AbsoluteSize" or property == "AbsolutePosition" then
 				Render(self)
 			end
@@ -76,7 +56,7 @@ end
 
 function hnUtil.Color3ToHex(color3)
 	local hecks = "0X"
-	if not color3.r == floor(color3.r) or not color3.g == floor(color3.g) or not color3.b == floor(color3.b) then
+	if not color3.r == math.floor(color3.r) or not color3.g == math.floor(color3.g) or not color3.b == math.floor(color3.b) then
 		rgb = { color3.r * 255, color3.g * 255, color3.b * 255 }
 	else
 		rgb = { color3.r, color3.g, color3.b }
@@ -84,9 +64,9 @@ function hnUtil.Color3ToHex(color3)
 	for k, v in pairs(rgb) do
 		local hex = ""
 		while v > 0 do
-			local i = fmod(v, 16) + 1
-			v = floor(v / 16)
-			hex = sub("0123456789ABCDEF", i, i) .. hex
+			local i = math.fmod(v, 16) + 1
+			v = math.floor(v / 16)
+			hex = ("0123456789ABCDEF"):sub(i, i) .. hex
 		end
 		if #hex == 0 then
 			hex = "00"
@@ -100,7 +80,7 @@ end
 
 function hnUtil.Vector3ToHex(vector3)
 	local hecks = "0X"
-	if not vector3.x == floor(vector3.x) or not vector3.y == floor(vector3.y) or not vector3.z == floor(vector3.z) then
+	if not vector3.x == math.floor(vector3.x) or not vector3.y == math.floor(vector3.y) or not vector3.z == math.floor(vector3.z) then
 		rgb = { vector3.x * 255, vector3.y * 255, vector3.z * 255 }
 	else
 		rgb = { vector3.x, vector3.y, vector3.z }
@@ -108,9 +88,9 @@ function hnUtil.Vector3ToHex(vector3)
 	for k, v in pairs(rgb) do
 		local hex = ""
 		while v > 0 do
-			local i = fmod(v, 16) + 1
-			v = floor(v / 16)
-			hex = sub("0123456789ABCDEF", i, i) .. hex
+			local i = math.fmod(v, 16) + 1
+			v = math.floor(v / 16)
+			hex = ("0123456789ABCDEF"):sub(i, i) .. hex
 		end
 		if #hex == 0 then
 			hex = "00"
@@ -127,17 +107,17 @@ function hnUtil.rrandom()
 	local min, max, newvalues, term
 	for i = 1, 255 do
 		if min == nil or max == nil then
-			newvalues = random(-100, 100)
+			newvalues = math.random(-100, 100)
 		elseif max == nil and min ~= nil then
-			newvalues = random(min, 100)
+			newvalues = math.random(min, 100)
 		elseif min == nil and max ~= nil then
-			newvalues = random(-100, max)
+			newvalues = math.random(-100, max)
 		else
-			newvalues = random(min, max)
+			newvalues = math.random(min, max)
 		end
-		insert(numbers, #numbers, newvalues)
+		numbers[#numbers + 1] = newvalues
 	end
-	term = random(1, 255)
+	term = math.random(1, 255)
 	return numbers[term]
 end
 
@@ -162,9 +142,9 @@ function hnGuiUtil:__newindex(i, v)
 end
 
 function hnGuiUtil:Destroy()
-	self._objectconnection:disconnect()
+	self._objectconnection:Disconnect()
 	if self._parentconnection then
-		self._parentconnection:disconnect()
+		self._parentconnection:Disconnect()
 	end
 	self._object, self._size, self._position, self._objectconnection, self._parentconnection = nil
 end
@@ -190,7 +170,7 @@ function UDim4.MakeEnforcer(guiobject, position, size)
 		_position = position or defaultposition,
 		_parentconnection = false
 	}
-	self._objectconnection = guiobject.Changed:connect(function(property)
+	self._objectconnection = guiobject.Changed:Connect(function(property)
 		if property == "AbsoluteSize" or property == "AbsolutePosition" then
 			Render(self)
 		elseif property == "Parent" then
